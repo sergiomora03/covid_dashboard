@@ -2,17 +2,11 @@
 
 Authors: 
 
-* [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
+* [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/), github: [sergiomora03.github.io](https://sergiomora03.github.io/)
 
-github: [sergiomora03.github.io](https://sergiomora03.github.io/)
+* _Alex Hernandez Paez_, github: [alexher90](https://github.com/alexher90)
 
-* _Alex Hernandez Paez_
-
-github: [alexher90](https://github.com/alexher90)
-
-* _Alex Camargo Garcia_
-
-github: [halepz](https://github.com/halepz)
+* _Alex Camargo Garcia_, github: [halepz](https://github.com/halepz)
 
 ### Introducción
 En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con
