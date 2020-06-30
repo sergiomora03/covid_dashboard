@@ -1,21 +1,10 @@
 # Covid-19 Dashboard
 
-Author: _Sergio Alberto Mora Pardo_
-
-* email: [s.morap@uniandes.edu.co](mailto:sergiomora823@gmail.com)
-* LinkedIn: [Sergio Mora](https://www.linkedin.com/in/sergiomorapardo/)
+Author: [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
 * github: [sergiomora03.github.io](https://sergiomora03.github.io/)
-
-*Contributors:*
-
-_Alex Hernandez Paez_
-
-* email: [ja.hernandezp@uniandes.edu.co](mailto:ja.hernandezp@uniandes.edu.co)
+Contributor: _Alex Hernandez Paez_
 * github: [alexher90](https://github.com/alexher90)
-
-_Alex Camargo Garcia_
-
-* email:[a.camargo733@uniandes.edu.co](mailto:a.camargo733@uniandes.edu.co)
+Contributor: _Alex Camargo Garcia_
 * github: [halepz](https://github.com/halepz)
 
 ### Introducción
@@ -38,6 +27,14 @@ datos dónde se han estado alimentando la información de los contagiados, su lu
 contagio. Así pues, teníamos toda la información a nuestro alcance para poder aportar al entendimiento del
 problema más grande que afecta a todo el mundo en este momento y sentimos que era nuestra obligación
 responder al llamado.
+
+# Contenido
+
+|Files|Description|
+|-----|-----------|
+|App | [App.R](https://github.com/sergiomora03/covid_dashboard/blob/master/app.R)|
+|Dashboard|[Shiny V1](https://sergiomora123.shinyapps.io/covid19_dashboard/)|
+|Dashboard|[Shiny V2](https://sergiomora123.shinyapps.io/covid_19/)|
 
 ## Objetivo
 Dada la información que estaba a nuestro alcance y la situación global por la que aún estamos, el objetivo de
@@ -66,10 +63,3 @@ información con el objetivo de:
 * Construir una simulación que compare la distancia social.
 * Construir un mapa para visualizar la cantidad de incdencias por país.
 
-# Contenido
-
-|Files|Description|
-|-----|-----------|
-|App | [App.R](https://github.com/sergiomora03/covid_dashboard/blob/master/app.R)|
-|Dashboard|[Shiny V1](https://sergiomora123.shinyapps.io/covid19_dashboard/)|
-|Dashboard|[Shiny V2](https://sergiomora123.shinyapps.io/covid_19/)|
