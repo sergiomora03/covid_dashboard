@@ -1,6 +1,6 @@
 # Covid-19 Dashboard
 
-## Introducción
+### Introducción
 En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con
 una neumonía viral, que posteriormente sería atribuida a un nuevo coronavirus, el COVID-19 o SARS-CoV-2.
 Para enero 30 del 2020 la OMS (organización mundial de la salud) lo declaró un problema de salud pública
