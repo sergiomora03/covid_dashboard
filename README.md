@@ -1,5 +1,23 @@
 # Covid-19 Dashboard
 
+Author: _Sergio Alberto Mora Pardo_
+
+* email: [s.morap@uniandes.edu.co](mailto:sergiomora823@gmail.com)
+* LinkedIn: [Sergio Mora](https://www.linkedin.com/in/sergiomorapardo/)
+* github: [sergiomora03.github.io](https://sergiomora03.github.io/)
+
+*Contributors:*
+
+_Alex Hernandez Paez_
+
+* email: [ja.hernandezp@uniandes.edu.co](mailto:ja.hernandezp@uniandes.edu.co)
+* github: [alexher90](https://github.com/alexher90)
+
+_Alex Camargo Garcia_
+
+* email:[a.camargo733@uniandes.edu.co](mailto:a.camargo733@uniandes.edu.co)
+* github: [halepz](https://github.com/halepz)
+
 ### Introducción
 En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con
 una neumonía viral, que posteriormente sería atribuida a un nuevo coronavirus, el COVID-19 o SARS-CoV-2.
@@ -42,11 +60,11 @@ Con el fin de alcanzar este objetivo, debíamos respoder:
 Adicionalmente, se pensó en generalizar el modelo para todos los países afectados y de los que tenemos
 información con el objetivo de:
 
-• Generar reportes que describan la situación de cada país.
-• Crear gráficos con las predicciones de las curvas de infectados.
-• Construir una simulación que compare movimiento libre vs restringido.
-• Construir una simulación que compare la distancia social.
-• Construir un mapa para visualizar la cantidad de incdencias por país.
+* Generar reportes que describan la situación de cada país.
+* Crear gráficos con las predicciones de las curvas de infectados.
+* Construir una simulación que compare movimiento libre vs restringido.
+* Construir una simulación que compare la distancia social.
+* Construir un mapa para visualizar la cantidad de incdencias por país.
 
 # Contenido
 
