@@ -5,10 +5,10 @@ Authors:
 * [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
 github: [sergiomora03.github.io](https://sergiomora03.github.io/)
 
-*_Alex Hernandez Paez_
+* _Alex Hernandez Paez_
 github: [alexher90](https://github.com/alexher90)
 
-*Contributor: _Alex Camargo Garcia_
+* _Alex Camargo Garcia_
 github: [halepz](https://github.com/halepz)
 
 ### Introducción
