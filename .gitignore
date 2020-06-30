@@ -2,4 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
+*.csv
 rsconnect/
+images/
+covid_presentation.Rpres
+covid_presentation.md
+Covid.Rmd
