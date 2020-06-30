@@ -2,7 +2,8 @@
 
 Authors: 
 
-* [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/), github: [sergiomora03.github.io](https://sergiomora03.github.io/)
+* [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
+, github: [sergiomora03.github.io](https://sergiomora03.github.io/)
 
 * _Alex Hernandez Paez_, github: [alexher90](https://github.com/alexher90)
 
