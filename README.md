@@ -1,13 +1,15 @@
 # Covid-19 Dashboard
 
-Author: [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
-* github: [sergiomora03.github.io](https://sergiomora03.github.io/)
+Authors: 
 
-Contributor: _Alex Hernandez Paez_
-* github: [alexher90](https://github.com/alexher90)
+* [_Sergio Mora Pardo_](https://www.linkedin.com/in/sergiomorapardo/)
+github: [sergiomora03.github.io](https://sergiomora03.github.io/)
 
-Contributor: _Alex Camargo Garcia_
-* github: [halepz](https://github.com/halepz)
+*_Alex Hernandez Paez_
+github: [alexher90](https://github.com/alexher90)
+
+*Contributor: _Alex Camargo Garcia_
+github: [halepz](https://github.com/halepz)
 
 ### Introducción
 En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con
