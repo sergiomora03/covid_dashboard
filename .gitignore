@@ -4,8 +4,7 @@
 .Ruserdata
 Covid.Rmd
 bbdd_final.csv
-rsconnect/
-images/
+-rsconnect/
 covid_presentation.Rpres
 covid_presentation.md
 covid_dashboard.Rproj
