@@ -1,5 +1,6 @@
 # Covid-19 Dashboard
 
+## Introducción
 En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con
 una neumonía viral, que posteriormente sería atribuida a un nuevo coronavirus, el COVID-19 o SARS-CoV-2.
 Para enero 30 del 2020 la OMS (organización mundial de la salud) lo declaró un problema de salud pública
@@ -20,11 +21,15 @@ contagio. Así pues, teníamos toda la información a nuestro alcance para poder
 problema más grande que afecta a todo el mundo en este momento y sentimos que era nuestra obligación
 responder al llamado.
 
+## Objetivo
 Dada la información que estaba a nuestro alcance y la situación global por la que aún estamos, el objetivo de
 este trabajo es:
 
 Crear un modelo que permita entender la propagación del SARS-CoV-2, prediciendo la curva de infectados y
-su duración a lo largo del tiempo en Colombia. Con el fin de alcanzar este objetivo, debíamos respoder:
+su duración a lo largo del tiempo en Colombia. 
+
+## Alcance:
+Con el fin de alcanzar este objetivo, debíamos respoder:
 
 1. ¿Cúando será el pico de la pandemia?
 2. ¿Cúantas personas estarán infectadas en el pico de la pandemia?
@@ -33,6 +38,7 @@ su duración a lo largo del tiempo en Colombia. Con el fin de alcanzar este obje
 5. ¿Cúantos fallecidos habrán?
 6. ¿Cúando finalizará la pandemia?
 
+## Anexos:
 Adicionalmente, se pensó en generalizar el modelo para todos los países afectados y de los que tenemos
 información con el objetivo de:
 
@@ -45,6 +51,7 @@ información con el objetivo de:
 # Contenido
 
 |Files|Description|
+|-----|-----------|
 |App | [App.R](https://github.com/sergiomora03/covid_dashboard/blob/master/app.R)|
 |Dashboard|[Shiny V1](https://sergiomora123.shinyapps.io/covid19_dashboard/)|
 |Dashboard|[Shiny V2](https://sergiomora123.shinyapps.io/covid_19/)|
