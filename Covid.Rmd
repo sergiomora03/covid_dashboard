@@ -1,0 +1,845 @@
+---
+title: Aplicación y aproximaciones al modelamiento SIR para el SARS-CoV-2.
+author: Mora, S. & Hernandez, A. & Camargo, A.
+date: 2020-05-26
+output:
+  revealjs::revealjs_presentation:
+    theme: simple
+    highlight: pygments
+    center: true
+    self_contained: false
+    reveal_plugins: ["notes", "search","chalkboard"]
+---
+<style>
+.small-code pre code {
+  font-size: 1em;
+}
+</style>
+
+
+## Introducción
+
+
+```{r, setup, include=FALSE}
+options(digits = 2,
+        scipen = 999999)
+library(scales)
+```
+
+<small>
+
+En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con una neumonía viral, que posteriormente sería atribuida a un nuevo coronavirus, el COVID-19 o SARS-CoV-2. Para enero 30 del 2020 la OMS (organización mundial de la salud) lo declaró un problema de salud pública internacional. En los siguientes meses el virus se propagó rápidamente por el continente asiático, luego por el continente europeo y finalmente alrededor del mundo. Para el 11 de marzo del 2020, la OMS reconoció al SARS-CoV-2 como una pandemia global. 
+
+</small>
+
+## Objetivo General
+
+*Crear un modelo que permita entender la propagación del SARS-CoV-2, prediciendo la curva de infectados y su duración a lo largo del tiempo en Colombia.*
+
+## Objetivos Especificos
+
+1. ¿Cúando será el pico de la pandemia?
+2. ¿Cúantas personas estarán infectadas en el pico de la pandemia?
+3. ¿Cúantos casos severos se tendrán a tener en el país?
+4. ¿Cúantos casos necesitarán cuidados intensivos?
+5. ¿Cúantos fallecidos habrán?
+6. ¿Cúando finalizará la pandemia?
+
+## Más objetivos
+
+* Generar reportes que describan la situación de cada país.
+* Crear gráficos con las predicciones de las curvas de infectados. 
+* Construir una simulación que compare movimiento libre vs restringido.
+* Construir una simulación que compare la distancia social.
+* Construir un mapa para visualizar la cantidad de incdencias por país.
+
+
+## Supuestos
+
+<small>
+
+Iniciando, es necesario indicar los supuestos que requiere la implementación de este modelo como de la mayoría, de los modelos epidemiológicos. 
+
+* No existe inmunidad prevía a la epidemia.
+* Todos los individuos son similares en cuanto susceptibilidad y infectividad. Donde se pueden mezclar de forma homogenea.
+* Un individuo que se recupera, desarrolla inmunidad. (*SIR*: Susceptible - Infecado - Recuperado).
+* No hay cambios de comportamiento durante el curso de la epidemia.
+
+</small>
+
+## Discución de Supuestos
+
+<small>
+
+* No hay inmunidad (natural o vacuna). Verdadero para los corona pero no para la influencia estacional. Sí la mitad de la comunidad es inmune, entonces, el tamaño final de la epidemia cambiaría dramáticamente. 
+
+* Una Comunidad homogenea. No verdadero para los corona o ninguna enfermedad. Determinar que heterogeneidad es importante, depende de la aplicación (Existen muchas investigaciones en esta dirección). Algunos efectos son que entre 10% al 20% menos se infectan.
+
+* No hay cambios durante la epidemia. Previniendo medidas durante el brote podrían tener una gran diferencia en su resultado.
+
+</small>
+
+
+## Modelado Suceptible - Infeccioso - Recuperado
+
+<small>
+
+Modelo matemático _Susceptible_ - _Infeccioso_ - _Recuperado_ (SIR) (Kermack y McKendrick 1927). 
+
+
+* $Susceptible$: Individuo que aún no a tenido la enfermedad, pero no es inmune a ella. Y por tanto, puede volverse infeccioso al tener contacto con un infectado.
+
+* $Infeccioso$: Individuo que actualmente esta comprometida por la enfermedad y capas de transmitirla a otros.
+
+* $Recuperado$: individuo infeccioso que ya no se ve afectado por la enfermedad y que ya no puede transmitirla. No puede producirse una reinfección, es decir, los individuos recuperados son inmunes a la enfermedad una vez la tuvieron.
+
+</small>
+
+
+## Momento cero
+
+<small>
+
+Suponemos que al momento cero:
+
+* Todos los individuos son suceptibles excepto por $m$ individuos, que son infecciosos en el momento cero. 
+
+* Una vez infectado, se recupera o muere. 
+
+* Matemáticamente por $S(t)$ $I(t)$ $R(t)$ denota el número de susceptible, infeccioso y recuperado en la población en el tiempo $t$. 
+
+* Para todos los tiempos $S(t) + I(t) + R(t) = N$. 
+
+En otras palabras, la población es cerrada y no varía en el tiempo.
+
+</small>
+
+## Sistema de Ecuaciones Diferenciales Ordinarias
+
+<small>
+
+De manera: $S \rightarrow I$ y $I \rightarrow R$. 
+
+
+$$
+\frac{\partial S(t)}{\partial t} = -\beta \cdot S(t) \cdot I(t) \\
+$$
+
+$$
+\frac{\partial I(t)}{\partial t} = -\beta \cdot S(t) \cdot I(t) - \gamma \cdot I(t)\\
+$$
+
+$$
+\frac{\partial R(t)}{\partial t} = - \gamma \cdot I(t)\\
+$$
+
+</small>
+
+## Sistema de Ecuaciones Diferenciales Ordinarias
+
+<small>
+
+De manera $S \rightarrow I$
+
+$\beta \cdot S(t) \cdot I(t)$
+
+* Cada individuo tiene contactos a una velocidad $\alpha$ para reunirse con otra persona especifica.
+
+* Una porción de $p$ contactos resulta en una infección. 
+
+* Entonces, $\beta = \alpha \cdot p$ es la tasa a la cual existen contactos infecciosos.
+
+</small>
+
+## Sistema de Ecuaciones Diferenciales Ordinarias
+
+<small>
+
+Esto denota el movimiento de los individuos por cada categoría. 
+
+De manera $S \rightarrow I$
+
+$\beta \cdot S(t) \cdot I(t)$
+
+
+$$
+\sum_{j = 1}^{I(t)} \cdot \beta \cdot S(t) = \beta \cdot I(t) \cdot S(t)\\
+$$
+
+Nota: Este es un termino no lineal que consta de $I(t)$ y $S(t)$.
+
+</small>
+
+## Sistema de Ecuaciones Diferenciales Ordinarias
+
+<small>
+
+Esto denota el movimiento de los individuos por cada categoría. 
+
+De manera $I \rightarrow R$
+
+$\gamma \cdot I(t)$. 
+
+* Nuevo individuo infeccioso $I \rightarrow R$ su transición sucede a una velocidad constante $\gamma$. 
+
+Es decir, que podemos interpretar que entre más pequeño sea $\gamma$ más individuos serán infectados y en consecuencia, ellos más podrán transmitir la enfermedad a otros.
+
+</small>
+
+## Sistema de Ecuaciones Diferenciales Ordinarias (resumen)
+
+<small>
+
+Podemos resumir este sistema de la siguiente manera:
+
+$$
+S \longrightarrow I \longrightarrow R\\
+$$
+
+_donde,_
+$$
+S \longrightarrow I := \beta \cdot S(t) \cdot I(t)\\
+$$
+$$
+I \longrightarrow R := \gamma \cdot I(t)
+$$
+
+</small>
+
+## Número básico de Reproducción
+
+<small>
+
+El $R_0$ es definido:
+
+"El número esperado de casos secundarios por caso primario en una población completamente susceptible". 
+
+---(Diekmann, Heesterbeek, and Britton 2013).
+
+Se calcula como:
+
+$$
+R_0 = N \cdot \frac{\beta}{\gamma}\\
+$$
+
+
+Para el caso del SARS-CoV-2, entendemos que por lo antrior que si $R_0$ es el número promedio de individuos infectados por otro individuo. Sí el valor de $R_0$ es alto, la probabilidad de pandemia es mayor. 
+
+</small>
+
+
+## Umbral inmune de individuos
+
+<small>
+
+El número de $R_0$ también es usado para estimar el umbral inmune de individuos en una población o _herd immune threshold (HIT por sus siglas en inglés)_:
+
+* Sí el número de individuos no inmune o susceptibles es igual a 1, indica que el estado esta equilibrado. 
+
+* Sí el número de individuos infectados es contante. 
+
+* Sí suponemos que la porción de personas es $p$ podemos formular un estado de la siguiente manera:
+
+$$
+R_0(1-p) = 1 \rightarrow 1 -p = \frac{1}{R_0} \rightarrow p_c = 1 - \frac{1}{R_0}
+$$
+
+</small>
+
+## Umbral inmune de individuos
+
+<small>
+
+Por lo tanto, $p_c$ es el _HIT_ para detener la propagación de la enfermedad. 
+
+$$
+p_c = 1 - \frac{1}{R_0}
+$$
+
+Es decir, que podemos vacunar una proporción de $p_c$ para aumentar la inmunidad de la población y sus individuos.
+
+</small>
+
+## Implementación en R
+
+<small>
+
+Donde, se usará para resolver las derivadas del sistema de ecuaciones diferenciales ordinarias por medio del paquete deSolve (Soetaert, Petzoldt, and Setzer 2010). 
+
+La información de invdividuos infectados por poblaciones _(paises o regiones)_ es extraida del paquete coronavirus (Rami Krispin, 2020).
+
+```{r, warning=FALSE, message=FALSE}
+library(deSolve)
+library(coronavirus)
+library(tidyverse)
+library(lubridate)
+```
+
+
+</small>
+
+## Modelaiento SIR
+
+<small>
+
+Antes de ajustar el modelo SIR. Es expresar las derivadas del sistema de ecuaciones diferenciales ordinarias _ODE_ como una función en R con su tiempo $t$.
+
+```{r}
+SIR <- function(time, state, parameters) {
+    par <- as.list(c(state, parameters))
+    with(par, {
+        dS <- -beta * I * S / N
+        dI <- beta * I * S / N - gamma * I
+        dR <- gamma * I
+        list(c(dS, dI, dR))
+        }
+    )
+}
+```
+
+```{r, echo=FALSE}
+population_country <- function(country) {
+    return(population_data %>% 
+               filter(`Country Name` == country) %>%
+               gather("year", "population", 5:64) %>%
+               filter(!is.na(population)) %>% 
+               mutate(max_year = max(year)) %>% 
+               filter(year == max_year) %>%
+               select(population) %>% {.[[1]]})
+    }
+```
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+```{r, echo=FALSE}
+data(coronavirus)
+population_data <- readxl::read_xls("www/API_SP.POP.TOTL_DS2_en_excel_v2_988396.xls")
+```
+
+
+Si vemos este sistema de ecuaciones diferenciales ordinarias debemos:
+
+* Solucionar las derivadas del sistema de ecuaciones diferenciales ordinarias _ODE_.
+
+* Encontrar los valores óptimos para los parámetros desconocidos $\beta$ y $\gamma$.
+
+## Ajustando Modelamiento SIR
+
+Entonces: 
+
+1. La función ode() para ecuaciones diferenciales ordinarias del paquete de R deSolve facilita hacer la solución del sistema de ecuaciones.
+
+2. Y para encontrar los valores óptimos de los parametros que se requieren estimar, se usa la función optim() consruida en la base de R.
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+En especial, se requiere resolver es minimizar la suma de la diferencia de los cuadrados entre $I(t)$ que es el ritmo de individuos en el componente infeccioso $I$ en el tiempo _t_ y el correspondiente número de casos como el pronóstico del modelo $\hat{I}(t)$. Esta medida es conocida como el residuo de la suma de cuadrados $RSS$:
+
+$$
+RSS(\gamma) = \sum_t (I(t)- \hat{I}(t))^2
+$$
+
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+```{r}
+data <- coronavirus %>%
+    filter(country == "Colombia") %>%
+    group_by(date, type) %>%
+    summarise(total = sum(cases, na.rm = TRUE)) %>%
+    pivot_wider(
+        names_from = type,
+        values_from = total
+    ) %>%
+    arrange(date) %>%
+    ungroup() %>%
+    mutate(active = confirmed - death - recovered) %>%
+    mutate(
+        confirmed_cum = cumsum(confirmed),
+        death_cum = cumsum(death),
+        recovered_cum = cumsum(recovered),
+        active_cum = cumsum(active)
+    )
+```
+
+
+```{r, echo=FALSE}
+tail(data) %>% 
+              {.[,-c(2:5)]} %>% 
+              `names<-`(c("Fecha", "Confirmados Acum.", "Muertes Acum.",
+                          "Recuperados Acum.", "Activos Acum.")
+                        )
+
+```
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+```{r, echo=FALSE}
+knitr::kable(tail(data, 20) %>% 
+              {.[,-c(2:5)]} %>% 
+              `names<-`(c("Fecha", "Confirmados Acum.", "Muertes Acum.",
+                          "Recuperados Acum.", "Activos Acum.")
+                        )
+          )
+```
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+Ahora, se pondrá el número de acumulación de incidencias diarias para Colombia en un vector llamado _Infected_.
+
+```{r, echo=FALSE}
+sir_start_date <- data %>% 
+    filter(active_cum >= 1) %>% 
+    select(date) %>% 
+    summarise(date = min(date)) %>% 
+    {.[[1]]}
+
+sir_end_date <- data %>%
+    filter(active_cum >= 1) %>% 
+    select(date) %>%
+    summarise(date = max(date)) %>% 
+    {.[[1]]}
+```
+
+```{r}
+Infected <- subset(data,
+                   date >= ymd(sir_start_date) &
+                       date <= ymd(sir_end_date)
+                   )$active_cum
+```
+
+_Nota: _ sir_start_date _y_ sir_end_date _representa_ $t \in T$ _donde,_ $T$ _es el conjunto de periodos, en este caso días. El inicio y final del conjunto, son respectivamente estas dos constantes_.
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+
+```{r, echo=FALSE}
+Day <- 1:(length(Infected))
+N <- population_country(country = "Colombia")
+```
+
+Es necesario, en este momento especificar los valores iniciales para _N_, _S_, _I_ y _R_.
+
+* $S$ es la diferencia de la población y el número de individuos infectados para `r sir_start_date` que representa el día inicial de incidencias de la enfermedad sobre los individuos de la población de Colombia.
+
+* $I$ será entonces el número de individuos infecciosos para `r sir_start_date`. 
+
+* $R$ iniciará en 0.
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+Es necesario, en este momento especificar los valores iniciales para _N_, _S_, _I_ y _R_.
+
+
+```{r}
+init <- c(
+    S = N - Infected[1],
+    I = Infected[1],
+    R = 0
+)
+```
+
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+* Definir la función de el _RSS_ dando un conjunto de valores para $\beta$ y $\gamma$. 
+* Definiendo esta función para calcular la suma de los residuos al cuadrado pasando los parametros $\beta$ y $\gamma$ que deben optimizar el mejor ajuste para los datos de incidencia.
+
+```{r}
+RSS <- function(parameters) {
+    names(parameters) <- c("beta", "gamma")
+    out <- ode(y = init, times = Day, func = SIR, parms = parameters)
+    fit <- out[, 3]
+    sum((Infected - fit)^2)
+}
+```
+
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+Finalmente, nosotros podemos ajustar el modelamiento SIR a los datos de incidencias, encontrando los valores de $\beta$ y $\gamma$ que minimiza la suma de los residuos al cuadrado entre las incidencias o casos activos acumulados observados y las incidencias acumuladas pronósticadas por el modelamiento. 
+
+Es decir, ahora encontraremos los valores de $\beta$ y $\gamma$ que brindan el menor _RSS_, el cual, representa el mejor ajuste a los datos de la incidencia. Inicia con los valores 0.5 para cada parametro y se restringen en el intervalo de 0 a 1.0
+
+```{r}
+Opt <- optim(c(0.5, 0.5),
+             RSS,
+             method = "L-BFGS-B",
+             lower = c(0, 0),
+             upper = c(1, 1)
+)
+```
+
+
+</small>
+
+## Ajustando Modelamiento SIR
+
+<small>
+
+Para validar la convergencia. Es `r Opt$message`. Si la convergencia es confirmada, se puede examinar los valores ajsutados para $\beta$ y $\gamma$, si no se confirma, igualmente se evaluarán los resultados del modelamiento, pero es neceario resaltar el suceso de no convergencia.
+
+```{r, echo=FALSE}
+Opt_par <- setNames(Opt$par, c("beta", "gamma"))
+```
+
+Así mismo, tenemos que los parámetros que minimizan la suma de residuos al cuadrado y que, por tanto, son los valores de mejor ajuste del modelamiento. $\beta$ = `r Opt_par[[1]]` y $\gamma$ = `r Opt_par[[2]]`.
+
+Recordemos que $\beta$ controla la transición entre _S_ e _I_ (Susceptible e infeccioso) y $\gamma$ controla la transición entre _I_ y _R_ (Infecioso y Recuperado). 
+
+
+Sin embargo, estos valores no son relevantes y son usados para obtener los números que se ajustan al comportamiento de los individuos del modelamiento SIR observados hasta el `r sir_end_date` y comparar estos valores ajustados con los observados en los datos.
+
+</small>
+
+## Pronóstico
+
+<small>
+
+
+```{r, echo=FALSE}
+t <- 1:as.integer(ymd(sir_end_date) + 1 - ymd(sir_start_date))
+```
+
+Para realizar el pronóstico inicaremos por obtener los valores ajustados del modelamiento SIR. Usaremos la funcion ode() y usaremos los parametros $\beta$ y $\gamma$ dentro definidos anteriormente para resolver el sistema de ecuaciones diferenciales ordinarias con el mejor ajuste encontrado.
+
+_Nota: _ $t = \{1,2,3,\ldots,n\}$ _donde_ $n = 1-t_{max}$ ; $t_{max} \in T$
+
+```{r}
+fitted_cumulative_incidence <- data.frame(ode(
+    y = init, times = t,
+    func = SIR, parms = Opt_par
+        )
+    )
+```
+
+
+```{r, echo=FALSE}
+fitted_cumulative_incidence <- fitted_cumulative_incidence %>%
+    mutate(
+        Date = ymd(sir_start_date) + days(t - 1),
+        Country = "Colombia",
+        cumulative_incident = Infected
+    )
+```
+
+</small>
+
+## Pronóstico
+
+<small>
+
+```{r}
+head(fitted_cumulative_incidence, 7)
+tail(fitted_cumulative_incidence, 7)
+```
+
+</small>
+
+## Pronóstico
+
+<small>
+
+```{r echo=FALSE}
+fitted_cumulative_incidence %>%
+    ggplot(aes(x = Date)) +
+    #geom_bar(aes(y = cumulative_incident_cases), colour = "darkblue", fill = "darkblue", stat = "identity") +
+    geom_point(aes(y = cumulative_incident), colour = "darkblue") +
+    geom_line(aes(y = I), colour = "darkred", size = 1.2) +
+    labs(
+        y = "Acumulación de incidencias",
+        x = "t",
+        title = paste0("SARS-CoV-2 ajustado vs incidencia acumulada observada, ", "Colombia"),
+        subtitle = "(Rojo = ajustado desde modelo SIR, Azul = observado)"
+    ) +
+    theme_classic() -> p1
+p1
+```
+
+</small>
+
+## Pronóstico
+
+```{r echo=FALSE}
+fitted_cumulative_incidence %>%
+    ggplot(aes(x = Date)) +
+    geom_bar(aes(y = cumulative_incident), colour = "darkblue", fill = "darkblue", stat = "identity") +
+    #geom_point(aes(y = cumulative_incident), colour = "darkblue") +
+    geom_line(aes(y = I), colour = "darkred", size = 1.2) +
+    labs(
+        y = "Acumulación de incidencias",
+        x = "t",
+        title = paste0("SARS-CoV-2 ajustado vs incidencia acumulada observada, ", "Colombia"),
+        subtitle = "(Rojo = ajustado desde modelo SIR, Azul = observado)"
+    ) +
+    theme_classic() -> p2
+p2
+```
+
+
+## Pronóstico
+
+<small>
+
+Para a gráfica podemos ver que los parámetros no son los más ajustados, pero si observamos que pareven seguiruna tendencia entre los valores ajustados y los observados. Necesitaríamos de más datos para comprobar si existe convergencia en el largo plazo. La siguiente gráfica es similar a la anterior, excepto que el eje _y_ es una metrica en una escala logarítmica.
+
+```{r, echo=FALSE}
+fitted_cumulative_incidence %>%
+    ggplot(aes(x = Date)) +
+    #geom_bar(aes(y = cumulative_incident_cases), colour = "darkblue", fill = "darkblue", stat = "identity") +
+    geom_point(aes(y = cumulative_incident), colour = "darkblue") +
+    geom_line(aes(y = I), colour = "darkred", size = 1.2) +
+    labs(
+        y = "Acumulación de incidencias",
+        x = "t",
+        title = paste0("SARS-CoV-2 ajustado vs incidencia acumulada observada, Colombia"),
+        subtitle = "(Rojo = ajustado desde modelo SIR, Azul = observado)"
+    ) +
+    theme_classic() +
+    scale_y_log10(labels = scales::comma) 
+    #scale_x_date(labels = date_format("%d-%b"), date_breaks = "24 days")
+
+fitted_cumulative_incidence %>%
+    ggplot(aes(x = Date)) +
+    geom_bar(aes(y = cumulative_incident), colour = "darkblue", fill = "darkblue", stat = "identity") +
+    #geom_point(aes(y = cumulative_incident), colour = "darkblue") +
+    geom_line(aes(y = I), colour = "darkred", size = 1.2) +
+    labs(
+        y = "Acumulación de incidencias",
+        x = "t",
+        title = paste0("SARS-CoV-2 ajustado vs incidencia acumulada observada, Colombia"),
+        subtitle = "(Rojo = ajustado desde modelo SIR, Azul = observado)"
+    ) +
+    theme_classic() +
+    scale_y_log10(labels = scales::comma) 
+    #scale_x_date(labels = date_format("%d-%b"), date_breaks = "24 days")
+```
+
+
+</small>
+
+## Número básico de reproducción
+
+<small>
+
+El modelamiento SIR, parece presentar un ajuste para los datos de las incidencias observadas en Colombia. Así que ahora apoyandose en el modelo se calculará el $R_0$ (número básico de reproducción). el **número básico de reprodución** nos indica el promedio de individuos susceptibles que fueron infectados por individuos infecciosos, es decir, el número básico de reproducción indica el cociente entre individuos saludables que pueden ser infectados por individuos enfermos. 
+
+Cuando $R_0 > 1$ la enfermedad empieza a expandirse en una población, pero sí $R_0 < 1$ no es así. Como se indico con anterioridad, entre mayor sea el valor de $R_0$ más complicado será tener control de la epidemia y tiene más probabilidades de convertirse en pandemia. 
+
+Formalmente, se tiene:
+
+$$
+R_0 = \frac{\beta}{\gamma}
+$$
+
+
+```{r}
+R0 <- as.numeric(Opt_par[1] / Opt_par[2])
+```
+
+</small>
+
+## Número básico de reproducción
+
+<small>
+
+Se tiene entones que para Colombia el $R_0$ = `r R0`. Es decir, un $R_0$ de `r R0` significa que en promedio en Colombia tenemos `r R0` individuos que son infectados por una persona infectada. De acuerdo con (Fine, Eames, and Heymann 2011) la proporción de individuos que debe ser inmune para prevenir un aumento del brote de la enfermedad o _HIT_ (como se mencionó con anterioridad) debe ser:
+
+$$
+1 - \frac{1}{R_0}
+$$
+
+El número de básico de reproducción `r R0` es suficiente para calcular la porción de individuos de la población que tienen que se inmunes para detener el brote de la enfermedad es `r paste0(round((1-(1/R0))*100, digits = 2), "%")`. Con la población estimada en el modelamiento SIR para Colombia se tendrían a aproximadamente `r prettyNum(round((1-(1/R0))*population_country(country = "Colombia")), big.mark = ",")` individuos inmunes para detener el brote del SARS-CoV-2.
+
+</small>
+
+## ¿Que sucede si la tendencia continua?
+
+
+<small>
+
+```{r, echo=FALSE}
+t <- 1:400
+```
+
+Traemos nuevamente los valores ajustados del modelamiento SIR. Como se observa a continuación:
+
+```{r}
+fitted_cumulative_incidence <- data.frame(ode(
+    y = init, times = t,
+    func = SIR, parms = Opt_par
+))
+```
+
+
+```{r, echo=FALSE}
+fitted_cumulative_incidence <- fitted_cumulative_incidence %>%
+    mutate(
+        Date = ymd(sir_start_date) + days(t - 1),
+        Country = "Colombia",
+        cumulative_incident = c(Infected, rep(NA, length(t) - length(Infected)))
+    )
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+fitted_cumulative_incidence %>% filter(I > 1) %>% 
+    ggplot(aes(x = Date)) +
+    geom_line(aes(y = I), colour = "red", size = 1) +
+    geom_line(aes(y = S), colour = "black", size = 1) +
+    geom_line(aes(y = R), colour = "green", size = 1) +
+    geom_bar(aes(y = cumulative_incident),
+             colour = "blue", fill = "blue",
+             stat = "identity"
+    ) +
+    scale_y_continuous(labels = scales::comma) +
+    scale_x_date(labels = date_format("%d-%b"), date_breaks = "24 days") +
+    labs(y = "Personas", 
+         title = "SARS-CoV-2 ajustado vs incidencia acumulada observada",
+        subtitle = paste0("Modelo SIR aplicado a ", "Colombia"),
+         x = "t") +
+    scale_colour_manual(name = "", values = c(
+        red = "red", black = "black",
+        green = "green", blue = "blue"
+    ), labels = c(
+        "Susceptible",
+        "Recuperdo", "Observado", "Infeccioso"
+    )) +
+    theme_classic()
+```
+
+</small>
+
+## ¿Que sucede si la tendencia continua?
+
+
+<small>
+
+Ahora, la misma gráfica con una transformación logarítmica para el eje _y_ con el fin de aumentar la sencilles de lectura de la grádica.
+
+```{r, echo=FALSE, warning=FALSE}
+## plot the data
+fitted_cumulative_incidence %>% filter(I > 1) %>% 
+    ggplot(aes(x = Date)) +
+    geom_bar(aes(y = cumulative_incident),
+             colour = "darkblue", fill = "darkblue",
+             stat = "identity") +
+    geom_line(aes(y = I, colour = "red"), size = 1) +
+    geom_line(aes(y = S, colour = "black"), size = 1) +
+    geom_line(aes(y = R, colour = "green"), size = 1) +
+    scale_y_log10(labels = scales::comma) +
+    scale_x_date(labels = date_format("%d-%b"), date_breaks = "4 week") +
+    labs(
+        y = "Personas",
+        x = "t",
+        title = "SARS-CoV-2 ajustado vs incidencia acumulada observada",
+        subtitle = paste0("Modelo SIR aplicado a ", "Colombia")
+        ) +
+    scale_colour_manual(
+        name = "",
+        values = c(red = "red", black = "black", green = "green", blue = "blue"),
+        labels = c("Susceptible", "Observado", "Recuperado", "Infeccioso")
+    ) +
+    theme_classic() 
+```
+
+</small>
+
+## ¿Que sucede si la tendencia continua?
+
+<small>
+
+Ahora, si únicamente queremos ver el pronóstico del modelamiento SIR y las incidencias acumuladas observadas, tenemos la siguinte gráfica:
+
+```{r, echo=FALSE, warning=FALSE}
+## plot the data
+fitted_cumulative_incidence %>% filter(I > 1) %>% 
+    ggplot(aes(x = Date)) +
+    geom_bar(aes(y = cumulative_incident),
+             colour = "darkblue", fill = "darkblue",
+             stat = "identity") +
+    geom_line(aes(y = I), colour = "darkred", size = 1) +
+    scale_y_log10(labels = scales::comma) +
+    scale_x_date(labels = date_format("%d-%b"), date_breaks = "24 days") +
+    labs(
+        y = "Personas",
+        x = "t",
+        title = "SARS-CoV-2 ajustado vs incidencia acumulada observada",
+        subtitle = paste0("Modelo SIR aplicado a ", "Colombia")
+    ) +
+    scale_colour_manual(
+        name = "",
+        values = c(red = "red", black = "black", green = "green", blue = "blue"),
+        labels = c("Susceptible", "Observado", "Recuperado", "Infeccioso")
+    ) +
+    theme_classic()
+```
+
+</small>
+
+## Conlusiones y discución final
+
+<small>
+
+Este tipo de modelamiento SIR, no cumple a cabalidad con todos los supuestos requeridos para la situación actual de la pandemia con el SARS-CoV-2. No obstante sirve como ejercicio para evaluar el alcance de la pandemia actual. También cabe indicar que existen estudios con mayor precisión basados en modelos con una mayor complejidad.
+
+```{r, echo=FALSE}
+fit <- fitted_cumulative_incidence
+
+## peak of pandemic
+peak_pandemic = fit[fit$I == max(fit$I), c("Date", "I")]
+
+## severe cases
+max_infected <- max(fit$I)
+severe_cases = max_infected * 0.2
+
+## cases with need for intensive care
+intensive_care = max_infected * 0.06
+
+## deaths with supposed 4.5% fatality rate
+deaths = max_infected * 0.045
+
+## date finish infeced
+date_finish_infeced = fitted_cumulative_incidence %>% filter(I > 1) %>% summarise(Date = max(Date))
+```
+
+Podemos evienciar que de acuerdo al modelaiento del SIR, el pico de la pandemia se estima el `r as.Date(peak_pandemic[[1]], format = "%Y-%m-%d")` y tendremos `r prettyNum(peak_pandemic[2], big.mark = ",")` casos infectados. Tendremos `r  prettyNum(round(severe_cases), big.mark = ",")` casos severos. Se estiman `r prettyNum(round(intensive_care), big.mark = ",")` casos de necesidad de cuidados intensivos. Y finalmente, se estiman `r prettyNum(round(deaths), big.mark = ",") ` muertes suponiendo una tasa de fatalidad del 4,5% . La pandemia según el modelamiento realizado con el modelo SIR terminará el `r as.Date(date_finish_infeced[[1]], format = "%Y-%m-%d")`.
+
+</small>
+

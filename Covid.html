@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Mora, S. &amp; Hernandez, A. &amp; Camargo, A." />
+  <meta name="dcterms.date" content="2020-05-26" />
+  <title>Aplicación y aproximaciones al modelamiento SIR para el SARS-CoV-2.</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="Covid_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="Covid_files/reveal.js-3.3.0.1/css/theme/simple.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+    <link href="Covid_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="Covid_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Aplicación y aproximaciones al modelamiento SIR para el SARS-CoV-2.</h1>
+    <h2 class="author">Mora, S. &amp; Hernandez, A. &amp; Camargo, A.</h2>
+    <h3 class="date">2020-05-26</h3>
+</section>
+
+<section class="slide level2">
+
+<style>
+.small-code pre code {
+  font-size: 1em;
+}
+</style>
+</section>
+<section id="introduccion" class="slide level2">
+<h2>Introducción</h2>
+<p><small></p>
+<p>En diciembre de 2019 en la ciudad de Wuhan (China) se registraron varios casos de personas enfermas con una neumonía viral, que posteriormente sería atribuida a un nuevo coronavirus, el COVID-19 o SARS-CoV-2. Para enero 30 del 2020 la OMS (organización mundial de la salud) lo declaró un problema de salud pública internacional. En los siguientes meses el virus se propagó rápidamente por el continente asiático, luego por el continente europeo y finalmente alrededor del mundo. Para el 11 de marzo del 2020, la OMS reconoció al SARS-CoV-2 como una pandemia global.</p>
+<p></small></p>
+</section>
+<section id="objetivo-general" class="slide level2">
+<h2>Objetivo General</h2>
+<p><em>Crear un modelo que permita entender la propagación del SARS-CoV-2, prediciendo la curva de infectados y su duración a lo largo del tiempo en Colombia.</em></p>
+</section>
+<section id="objetivos-especificos" class="slide level2">
+<h2>Objetivos Especificos</h2>
+<ol type="1">
+<li>¿Cúando será el pico de la pandemia?</li>
+<li>¿Cúantas personas estarán infectadas en el pico de la pandemia?</li>
+<li>¿Cúantos casos severos se tendrán a tener en el país?</li>
+<li>¿Cúantos casos necesitarán cuidados intensivos?</li>
+<li>¿Cúantos fallecidos habrán?</li>
+<li>¿Cúando finalizará la pandemia?</li>
+</ol>
+</section>
+<section id="mas-objetivos" class="slide level2">
+<h2>Más objetivos</h2>
+<ul>
+<li>Generar reportes que describan la situación de cada país.</li>
+<li>Crear gráficos con las predicciones de las curvas de infectados.</li>
+<li>Construir una simulación que compare movimiento libre vs restringido.</li>
+<li>Construir una simulación que compare la distancia social.</li>
+<li>Construir un mapa para visualizar la cantidad de incdencias por país.</li>
+</ul>
+</section>
+<section id="supuestos" class="slide level2">
+<h2>Supuestos</h2>
+<p><small></p>
+<p>Iniciando, es necesario indicar los supuestos que requiere la implementación de este modelo como de la mayoría, de los modelos epidemiológicos.</p>
+<ul>
+<li>No existe inmunidad prevía a la epidemia.</li>
+<li>Todos los individuos son similares en cuanto susceptibilidad y infectividad. Donde se pueden mezclar de forma homogenea.</li>
+<li>Un individuo que se recupera, desarrolla inmunidad. (<em>SIR</em>: Susceptible - Infecado - Recuperado).</li>
+<li>No hay cambios de comportamiento durante el curso de la epidemia.</li>
+</ul>
+<p></small></p>
+</section>
+<section id="discucion-de-supuestos" class="slide level2">
+<h2>Discución de Supuestos</h2>
+<p><small></p>
+<ul>
+<li><p>No hay inmunidad (natural o vacuna). Verdadero para los corona pero no para la influencia estacional. Sí la mitad de la comunidad es inmune, entonces, el tamaño final de la epidemia cambiaría dramáticamente.</p></li>
+<li><p>Una Comunidad homogenea. No verdadero para los corona o ninguna enfermedad. Determinar que heterogeneidad es importante, depende de la aplicación (Existen muchas investigaciones en esta dirección). Algunos efectos son que entre 10% al 20% menos se infectan.</p></li>
+<li><p>No hay cambios durante la epidemia. Previniendo medidas durante el brote podrían tener una gran diferencia en su resultado.</p></li>
+</ul>
+<p></small></p>
+</section>
+<section id="modelado-suceptible---infeccioso---recuperado" class="slide level2">
+<h2>Modelado Suceptible - Infeccioso - Recuperado</h2>
+<p><small></p>
+<p>Modelo matemático <em>Susceptible</em> - <em>Infeccioso</em> - <em>Recuperado</em> (SIR) (Kermack y McKendrick 1927).</p>
+<ul>
+<li><p><span class="math inline">\(Susceptible\)</span>: Individuo que aún no a tenido la enfermedad, pero no es inmune a ella. Y por tanto, puede volverse infeccioso al tener contacto con un infectado.</p></li>
+<li><p><span class="math inline">\(Infeccioso\)</span>: Individuo que actualmente esta comprometida por la enfermedad y capas de transmitirla a otros.</p></li>
+<li><p><span class="math inline">\(Recuperado\)</span>: individuo infeccioso que ya no se ve afectado por la enfermedad y que ya no puede transmitirla. No puede producirse una reinfección, es decir, los individuos recuperados son inmunes a la enfermedad una vez la tuvieron.</p></li>
+</ul>
+<p></small></p>
+</section>
+<section id="momento-cero" class="slide level2">
+<h2>Momento cero</h2>
+<p><small></p>
+<p>Suponemos que al momento cero:</p>
+<ul>
+<li><p>Todos los individuos son suceptibles excepto por <span class="math inline">\(m\)</span> individuos, que son infecciosos en el momento cero.</p></li>
+<li><p>Una vez infectado, se recupera o muere.</p></li>
+<li><p>Matemáticamente por <span class="math inline">\(S(t)\)</span> <span class="math inline">\(I(t)\)</span> <span class="math inline">\(R(t)\)</span> denota el número de susceptible, infeccioso y recuperado en la población en el tiempo <span class="math inline">\(t\)</span>.</p></li>
+<li><p>Para todos los tiempos <span class="math inline">\(S(t) + I(t) + R(t) = N\)</span>.</p></li>
+</ul>
+<p>En otras palabras, la población es cerrada y no varía en el tiempo.</p>
+<p></small></p>
+</section>
+<section id="sistema-de-ecuaciones-diferenciales-ordinarias" class="slide level2">
+<h2>Sistema de Ecuaciones Diferenciales Ordinarias</h2>
+<p><small></p>
+<p>De manera: <span class="math inline">\(S \rightarrow I\)</span> y <span class="math inline">\(I \rightarrow R\)</span>.</p>
+<p><span class="math display">\[
+\frac{\partial S(t)}{\partial t} = -\beta \cdot S(t) \cdot I(t) \\
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial I(t)}{\partial t} = -\beta \cdot S(t) \cdot I(t) - \gamma \cdot I(t)\\
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial R(t)}{\partial t} = - \gamma \cdot I(t)\\
+\]</span></p>
+<p></small></p>
+</section>
+<section id="sistema-de-ecuaciones-diferenciales-ordinarias-1" class="slide level2">
+<h2>Sistema de Ecuaciones Diferenciales Ordinarias</h2>
+<p><small></p>
+<p>De manera <span class="math inline">\(S \rightarrow I\)</span></p>
+<p><span class="math inline">\(\beta \cdot S(t) \cdot I(t)\)</span></p>
+<ul>
+<li><p>Cada individuo tiene contactos a una velocidad <span class="math inline">\(\alpha\)</span> para reunirse con otra persona especifica.</p></li>
+<li><p>Una porción de <span class="math inline">\(p\)</span> contactos resulta en una infección.</p></li>
+<li><p>Entonces, <span class="math inline">\(\beta = \alpha \cdot p\)</span> es la tasa a la cual existen contactos infecciosos.</p></li>
+</ul>
+<p></small></p>
+</section>
+<section id="sistema-de-ecuaciones-diferenciales-ordinarias-2" class="slide level2">
+<h2>Sistema de Ecuaciones Diferenciales Ordinarias</h2>
+<p><small></p>
+<p>Esto denota el movimiento de los individuos por cada categoría.</p>
+<p>De manera <span class="math inline">\(S \rightarrow I\)</span></p>
+<p><span class="math inline">\(\beta \cdot S(t) \cdot I(t)\)</span></p>
+<p><span class="math display">\[
+\sum_{j = 1}^{I(t)} \cdot \beta \cdot S(t) = \beta \cdot I(t) \cdot S(t)\\
+\]</span></p>
+<p>Nota: Este es un termino no lineal que consta de <span class="math inline">\(I(t)\)</span> y <span class="math inline">\(S(t)\)</span>.</p>
+<p></small></p>
+</section>
+<section id="sistema-de-ecuaciones-diferenciales-ordinarias-3" class="slide level2">
+<h2>Sistema de Ecuaciones Diferenciales Ordinarias</h2>
+<p><small></p>
+<p>Esto denota el movimiento de los individuos por cada categoría.</p>
+<p>De manera <span class="math inline">\(I \rightarrow R\)</span></p>
+<p><span class="math inline">\(\gamma \cdot I(t)\)</span>.</p>
+<ul>
+<li>Nuevo individuo infeccioso <span class="math inline">\(I \rightarrow R\)</span> su transición sucede a una velocidad constante <span class="math inline">\(\gamma\)</span>.</li>
+</ul>
+<p>Es decir, que podemos interpretar que entre más pequeño sea <span class="math inline">\(\gamma\)</span> más individuos serán infectados y en consecuencia, ellos más podrán transmitir la enfermedad a otros.</p>
+<p></small></p>
+</section>
+<section id="sistema-de-ecuaciones-diferenciales-ordinarias-resumen" class="slide level2">
+<h2>Sistema de Ecuaciones Diferenciales Ordinarias (resumen)</h2>
+<p><small></p>
+<p>Podemos resumir este sistema de la siguiente manera:</p>
+<p><span class="math display">\[
+S \longrightarrow I \longrightarrow R\\
+\]</span></p>
+<p><em>donde,</em> <span class="math display">\[
+S \longrightarrow I := \beta \cdot S(t) \cdot I(t)\\
+\]</span> <span class="math display">\[
+I \longrightarrow R := \gamma \cdot I(t)
+\]</span></p>
+<p></small></p>
+</section>
+<section id="numero-basico-de-reproduccion" class="slide level2">
+<h2>Número básico de Reproducción</h2>
+<p><small></p>
+<p>El <span class="math inline">\(R_0\)</span> es definido:</p>
+<p>“El número esperado de casos secundarios por caso primario en una población completamente susceptible”.</p>
+<p>—(Diekmann, Heesterbeek, and Britton 2013).</p>
+<p>Se calcula como:</p>
+<p><span class="math display">\[
+R_0 = N \cdot \frac{\beta}{\gamma}\\
+\]</span></p>
+<p>Para el caso del SARS-CoV-2, entendemos que por lo antrior que si <span class="math inline">\(R_0\)</span> es el número promedio de individuos infectados por otro individuo. Sí el valor de <span class="math inline">\(R_0\)</span> es alto, la probabilidad de pandemia es mayor.</p>
+<p></small></p>
+</section>
+<section id="umbral-inmune-de-individuos" class="slide level2">
+<h2>Umbral inmune de individuos</h2>
+<p><small></p>
+<p>El número de <span class="math inline">\(R_0\)</span> también es usado para estimar el umbral inmune de individuos en una población o <em>herd immune threshold (HIT por sus siglas en inglés)</em>:</p>
+<ul>
+<li><p>Sí el número de individuos no inmune o susceptibles es igual a 1, indica que el estado esta equilibrado.</p></li>
+<li><p>Sí el número de individuos infectados es contante.</p></li>
+<li><p>Sí suponemos que la porción de personas es <span class="math inline">\(p\)</span> podemos formular un estado de la siguiente manera:</p></li>
+</ul>
+<p><span class="math display">\[
+R_0(1-p) = 1 \rightarrow 1 -p = \frac{1}{R_0} \rightarrow p_c = 1 - \frac{1}{R_0}
+\]</span></p>
+<p></small></p>
+</section>
+<section id="umbral-inmune-de-individuos-1" class="slide level2">
+<h2>Umbral inmune de individuos</h2>
+<p><small></p>
+<p>Por lo tanto, <span class="math inline">\(p_c\)</span> es el <em>HIT</em> para detener la propagación de la enfermedad.</p>
+<p><span class="math display">\[
+p_c = 1 - \frac{1}{R_0}
+\]</span></p>
+<p>Es decir, que podemos vacunar una proporción de <span class="math inline">\(p_c\)</span> para aumentar la inmunidad de la población y sus individuos.</p>
+<p></small></p>
+</section>
+<section id="implementacion-en-r" class="slide level2">
+<h2>Implementación en R</h2>
+<p><small></p>
+<p>Donde, se usará para resolver las derivadas del sistema de ecuaciones diferenciales ordinarias por medio del paquete deSolve (Soetaert, Petzoldt, and Setzer 2010).</p>
+<p>La información de invdividuos infectados por poblaciones <em>(paises o regiones)</em> es extraida del paquete coronavirus (Rami Krispin, 2020).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(deSolve)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(coronavirus)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(lubridate)</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="modelaiento-sir" class="slide level2">
+<h2>Modelaiento SIR</h2>
+<p><small></p>
+<p>Antes de ajustar el modelo SIR. Es expresar las derivadas del sistema de ecuaciones diferenciales ordinarias <em>ODE</em> como una función en R con su tiempo <span class="math inline">\(t\)</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">SIR &lt;-<span class="st"> </span><span class="cf">function</span>(time, state, parameters) {</a>
+<a class="sourceLine" id="cb2-2" title="2">    par &lt;-<span class="st"> </span><span class="kw">as.list</span>(<span class="kw">c</span>(state, parameters))</a>
+<a class="sourceLine" id="cb2-3" title="3">    <span class="kw">with</span>(par, {</a>
+<a class="sourceLine" id="cb2-4" title="4">        dS &lt;-<span class="st"> </span><span class="op">-</span>beta <span class="op">*</span><span class="st"> </span>I <span class="op">*</span><span class="st"> </span>S <span class="op">/</span><span class="st"> </span>N</a>
+<a class="sourceLine" id="cb2-5" title="5">        dI &lt;-<span class="st"> </span>beta <span class="op">*</span><span class="st"> </span>I <span class="op">*</span><span class="st"> </span>S <span class="op">/</span><span class="st"> </span>N <span class="op">-</span><span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>I</a>
+<a class="sourceLine" id="cb2-6" title="6">        dR &lt;-<span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>I</a>
+<a class="sourceLine" id="cb2-7" title="7">        <span class="kw">list</span>(<span class="kw">c</span>(dS, dI, dR))</a>
+<a class="sourceLine" id="cb2-8" title="8">        }</a>
+<a class="sourceLine" id="cb2-9" title="9">    )</a>
+<a class="sourceLine" id="cb2-10" title="10">}</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Si vemos este sistema de ecuaciones diferenciales ordinarias debemos:</p>
+<ul>
+<li><p>Solucionar las derivadas del sistema de ecuaciones diferenciales ordinarias <em>ODE</em>.</p></li>
+<li><p>Encontrar los valores óptimos para los parámetros desconocidos <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span>.</p></li>
+</ul>
+</section>
+<section id="ajustando-modelamiento-sir-1" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p>Entonces:</p>
+<ol type="1">
+<li><p>La función ode() para ecuaciones diferenciales ordinarias del paquete de R deSolve facilita hacer la solución del sistema de ecuaciones.</p></li>
+<li><p>Y para encontrar los valores óptimos de los parametros que se requieren estimar, se usa la función optim() consruida en la base de R.</p></li>
+</ol>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-2" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>En especial, se requiere resolver es minimizar la suma de la diferencia de los cuadrados entre <span class="math inline">\(I(t)\)</span> que es el ritmo de individuos en el componente infeccioso <span class="math inline">\(I\)</span> en el tiempo <em>t</em> y el correspondiente número de casos como el pronóstico del modelo <span class="math inline">\(\hat{I}(t)\)</span>. Esta medida es conocida como el residuo de la suma de cuadrados <span class="math inline">\(RSS\)</span>:</p>
+<p><span class="math display">\[
+RSS(\gamma) = \sum_t (I(t)- \hat{I}(t))^2
+\]</span></p>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-3" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">data &lt;-<span class="st"> </span>coronavirus <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">    </span><span class="kw">filter</span>(country <span class="op">==</span><span class="st"> &quot;Colombia&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="st">    </span><span class="kw">group_by</span>(date, type) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">total =</span> <span class="kw">sum</span>(cases, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="st">    </span><span class="kw">pivot_wider</span>(</a>
+<a class="sourceLine" id="cb3-6" title="6">        <span class="dt">names_from =</span> type,</a>
+<a class="sourceLine" id="cb3-7" title="7">        <span class="dt">values_from =</span> total</a>
+<a class="sourceLine" id="cb3-8" title="8">    ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="st">    </span><span class="kw">arrange</span>(date) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">active =</span> confirmed <span class="op">-</span><span class="st"> </span>death <span class="op">-</span><span class="st"> </span>recovered) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="st">    </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb3-13" title="13">        <span class="dt">confirmed_cum =</span> <span class="kw">cumsum</span>(confirmed),</a>
+<a class="sourceLine" id="cb3-14" title="14">        <span class="dt">death_cum =</span> <span class="kw">cumsum</span>(death),</a>
+<a class="sourceLine" id="cb3-15" title="15">        <span class="dt">recovered_cum =</span> <span class="kw">cumsum</span>(recovered),</a>
+<a class="sourceLine" id="cb3-16" title="16">        <span class="dt">active_cum =</span> <span class="kw">cumsum</span>(active)</a>
+<a class="sourceLine" id="cb3-17" title="17">    )</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##   Fecha      `Confirmados Ac~ `Muertes Acum.` `Recuperados Ac~
+##   &lt;date&gt;                &lt;int&gt;           &lt;int&gt;            &lt;int&gt;
+## 1 2020-05-09            10495             445             2569
+## 2 2020-05-10            11063             463             2705
+## 3 2020-05-11            11613             479             2825
+## 4 2020-05-12            12272             493             2971
+## 5 2020-05-13            12930             509             3133
+## 6 2020-05-14            13610             525             3358
+## # ... with 1 more variable: `Activos Acum.` &lt;int&gt;</code></pre>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-4" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Fecha</th>
+<th style="text-align: right;">Confirmados Acum.</th>
+<th style="text-align: right;">Muertes Acum.</th>
+<th style="text-align: right;">Recuperados Acum.</th>
+<th style="text-align: right;">Activos Acum.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2020-04-25</td>
+<td style="text-align: right;">5142</td>
+<td style="text-align: right;">233</td>
+<td style="text-align: right;">1067</td>
+<td style="text-align: right;">3842</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-04-26</td>
+<td style="text-align: right;">5379</td>
+<td style="text-align: right;">244</td>
+<td style="text-align: right;">1133</td>
+<td style="text-align: right;">4002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-04-27</td>
+<td style="text-align: right;">5597</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">1210</td>
+<td style="text-align: right;">4134</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-04-28</td>
+<td style="text-align: right;">5949</td>
+<td style="text-align: right;">269</td>
+<td style="text-align: right;">1268</td>
+<td style="text-align: right;">4412</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-04-29</td>
+<td style="text-align: right;">6207</td>
+<td style="text-align: right;">278</td>
+<td style="text-align: right;">1411</td>
+<td style="text-align: right;">4518</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-04-30</td>
+<td style="text-align: right;">6507</td>
+<td style="text-align: right;">293</td>
+<td style="text-align: right;">1439</td>
+<td style="text-align: right;">4775</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-01</td>
+<td style="text-align: right;">7006</td>
+<td style="text-align: right;">314</td>
+<td style="text-align: right;">1551</td>
+<td style="text-align: right;">5141</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-02</td>
+<td style="text-align: right;">7285</td>
+<td style="text-align: right;">324</td>
+<td style="text-align: right;">1666</td>
+<td style="text-align: right;">5295</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-03</td>
+<td style="text-align: right;">7668</td>
+<td style="text-align: right;">340</td>
+<td style="text-align: right;">1722</td>
+<td style="text-align: right;">5606</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-04</td>
+<td style="text-align: right;">7973</td>
+<td style="text-align: right;">358</td>
+<td style="text-align: right;">1807</td>
+<td style="text-align: right;">5808</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-05</td>
+<td style="text-align: right;">8613</td>
+<td style="text-align: right;">378</td>
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">6222</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-06</td>
+<td style="text-align: right;">8959</td>
+<td style="text-align: right;">397</td>
+<td style="text-align: right;">2148</td>
+<td style="text-align: right;">6414</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-07</td>
+<td style="text-align: right;">9456</td>
+<td style="text-align: right;">407</td>
+<td style="text-align: right;">2300</td>
+<td style="text-align: right;">6749</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-08</td>
+<td style="text-align: right;">10051</td>
+<td style="text-align: right;">428</td>
+<td style="text-align: right;">2424</td>
+<td style="text-align: right;">7199</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-09</td>
+<td style="text-align: right;">10495</td>
+<td style="text-align: right;">445</td>
+<td style="text-align: right;">2569</td>
+<td style="text-align: right;">7481</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-10</td>
+<td style="text-align: right;">11063</td>
+<td style="text-align: right;">463</td>
+<td style="text-align: right;">2705</td>
+<td style="text-align: right;">7895</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-11</td>
+<td style="text-align: right;">11613</td>
+<td style="text-align: right;">479</td>
+<td style="text-align: right;">2825</td>
+<td style="text-align: right;">8309</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-12</td>
+<td style="text-align: right;">12272</td>
+<td style="text-align: right;">493</td>
+<td style="text-align: right;">2971</td>
+<td style="text-align: right;">8808</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2020-05-13</td>
+<td style="text-align: right;">12930</td>
+<td style="text-align: right;">509</td>
+<td style="text-align: right;">3133</td>
+<td style="text-align: right;">9288</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2020-05-14</td>
+<td style="text-align: right;">13610</td>
+<td style="text-align: right;">525</td>
+<td style="text-align: right;">3358</td>
+<td style="text-align: right;">9727</td>
+</tr>
+</tbody>
+</table>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-5" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Ahora, se pondrá el número de acumulación de incidencias diarias para Colombia en un vector llamado <em>Infected</em>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">Infected &lt;-<span class="st"> </span><span class="kw">subset</span>(data,</a>
+<a class="sourceLine" id="cb5-2" title="2">                   date <span class="op">&gt;=</span><span class="st"> </span><span class="kw">ymd</span>(sir_start_date) <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">                       </span>date <span class="op">&lt;=</span><span class="st"> </span><span class="kw">ymd</span>(sir_end_date)</a>
+<a class="sourceLine" id="cb5-4" title="4">                   )<span class="op">$</span>active_cum</a></code></pre></div>
+<p><em>Nota: </em> sir_start_date <em>y</em> sir_end_date <em>representa</em> <span class="math inline">\(t \in T\)</span> <em>donde,</em> <span class="math inline">\(T\)</span> <em>es el conjunto de periodos, en este caso días. El inicio y final del conjunto, son respectivamente estas dos constantes</em>.</p>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-6" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Es necesario, en este momento especificar los valores iniciales para <em>N</em>, <em>S</em>, <em>I</em> y <em>R</em>.</p>
+<ul>
+<li><p><span class="math inline">\(S\)</span> es la diferencia de la población y el número de individuos infectados para 2020-03-06 que representa el día inicial de incidencias de la enfermedad sobre los individuos de la población de Colombia.</p></li>
+<li><p><span class="math inline">\(I\)</span> será entonces el número de individuos infecciosos para 2020-03-06.</p></li>
+<li><p><span class="math inline">\(R\)</span> iniciará en 0.</p></li>
+</ul>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-7" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Es necesario, en este momento especificar los valores iniciales para <em>N</em>, <em>S</em>, <em>I</em> y <em>R</em>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">init &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb6-2" title="2">    <span class="dt">S =</span> N <span class="op">-</span><span class="st"> </span>Infected[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb6-3" title="3">    <span class="dt">I =</span> Infected[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb6-4" title="4">    <span class="dt">R =</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb6-5" title="5">)</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-8" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<ul>
+<li>Definir la función de el <em>RSS</em> dando un conjunto de valores para <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span>.</li>
+<li>Definiendo esta función para calcular la suma de los residuos al cuadrado pasando los parametros <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span> que deben optimizar el mejor ajuste para los datos de incidencia.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">RSS &lt;-<span class="st"> </span><span class="cf">function</span>(parameters) {</a>
+<a class="sourceLine" id="cb7-2" title="2">    <span class="kw">names</span>(parameters) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;beta&quot;</span>, <span class="st">&quot;gamma&quot;</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3">    out &lt;-<span class="st"> </span><span class="kw">ode</span>(<span class="dt">y =</span> init, <span class="dt">times =</span> Day, <span class="dt">func =</span> SIR, <span class="dt">parms =</span> parameters)</a>
+<a class="sourceLine" id="cb7-4" title="4">    fit &lt;-<span class="st"> </span>out[, <span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb7-5" title="5">    <span class="kw">sum</span>((Infected <span class="op">-</span><span class="st"> </span>fit)<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb7-6" title="6">}</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-9" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Finalmente, nosotros podemos ajustar el modelamiento SIR a los datos de incidencias, encontrando los valores de <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span> que minimiza la suma de los residuos al cuadrado entre las incidencias o casos activos acumulados observados y las incidencias acumuladas pronósticadas por el modelamiento.</p>
+<p>Es decir, ahora encontraremos los valores de <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span> que brindan el menor <em>RSS</em>, el cual, representa el mejor ajuste a los datos de la incidencia. Inicia con los valores 0.5 para cada parametro y se restringen en el intervalo de 0 a 1.0</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">Opt &lt;-<span class="st"> </span><span class="kw">optim</span>(<span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</a>
+<a class="sourceLine" id="cb8-2" title="2">             RSS,</a>
+<a class="sourceLine" id="cb8-3" title="3">             <span class="dt">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>,</a>
+<a class="sourceLine" id="cb8-4" title="4">             <span class="dt">lower =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb8-5" title="5">             <span class="dt">upper =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb8-6" title="6">)</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="ajustando-modelamiento-sir-10" class="slide level2">
+<h2>Ajustando Modelamiento SIR</h2>
+<p><small></p>
+<p>Para validar la convergencia. Es ERROR: ABNORMAL_TERMINATION_IN_LNSRCH. Si la convergencia es confirmada, se puede examinar los valores ajsutados para <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span>, si no se confirma, igualmente se evaluarán los resultados del modelamiento, pero es neceario resaltar el suceso de no convergencia.</p>
+<p>Así mismo, tenemos que los parámetros que minimizan la suma de residuos al cuadrado y que, por tanto, son los valores de mejor ajuste del modelamiento. <span class="math inline">\(\beta\)</span> = 1 y <span class="math inline">\(\gamma\)</span> = 0.86.</p>
+<p>Recordemos que <span class="math inline">\(\beta\)</span> controla la transición entre <em>S</em> e <em>I</em> (Susceptible e infeccioso) y <span class="math inline">\(\gamma\)</span> controla la transición entre <em>I</em> y <em>R</em> (Infecioso y Recuperado).</p>
+<p>Sin embargo, estos valores no son relevantes y son usados para obtener los números que se ajustan al comportamiento de los individuos del modelamiento SIR observados hasta el 2020-05-14 y comparar estos valores ajustados con los observados en los datos.</p>
+<p></small></p>
+</section>
+<section id="pronostico" class="slide level2">
+<h2>Pronóstico</h2>
+<p><small></p>
+<p>Para realizar el pronóstico inicaremos por obtener los valores ajustados del modelamiento SIR. Usaremos la funcion ode() y usaremos los parametros <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span> dentro definidos anteriormente para resolver el sistema de ecuaciones diferenciales ordinarias con el mejor ajuste encontrado.</p>
+<p><em>Nota: </em> <span class="math inline">\(t = \{1,2,3,\ldots,n\}\)</span> <em>donde</em> <span class="math inline">\(n = 1-t_{max}\)</span> ; <span class="math inline">\(t_{max} \in T\)</span></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">fitted_cumulative_incidence &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">ode</span>(</a>
+<a class="sourceLine" id="cb9-2" title="2">    <span class="dt">y =</span> init, <span class="dt">times =</span> t,</a>
+<a class="sourceLine" id="cb9-3" title="3">    <span class="dt">func =</span> SIR, <span class="dt">parms =</span> Opt_par</a>
+<a class="sourceLine" id="cb9-4" title="4">        )</a>
+<a class="sourceLine" id="cb9-5" title="5">    )</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="pronostico-1" class="slide level2">
+<h2>Pronóstico</h2>
+<p><small></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">head</span>(fitted_cumulative_incidence, <span class="dv">7</span>)</a></code></pre></div>
+<pre><code>##   time        S   I    R       Date  Country cumulative_incident
+## 1    1 49648684 1.0 0.00 2020-03-06 Colombia                   1
+## 2    2 49648683 1.1 0.92 2020-03-07 Colombia                   1
+## 3    3 49648682 1.3 1.99 2020-03-08 Colombia                   1
+## 4    4 49648680 1.5 3.20 2020-03-09 Colombia                   1
+## 5    5 49648679 1.7 4.60 2020-03-10 Colombia                   3
+## 6    6 49648677 2.0 6.20 2020-03-11 Colombia                   9
+## 7    7 49648675 2.3 8.05 2020-03-12 Colombia                   9</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">tail</span>(fitted_cumulative_incidence, <span class="dv">7</span>)</a></code></pre></div>
+<pre><code>##    time        S     I     R       Date  Country cumulative_incident
+## 64   64 49606139  5847 36699 2020-05-08 Colombia                7199
+## 65   65 49599879  6704 42101 2020-05-09 Colombia                7481
+## 66   66 49592702  7687 48296 2020-05-10 Colombia                7895
+## 67   67 49584476  8812 55398 2020-05-11 Colombia                8309
+## 68   68 49575048 10099 63538 2020-05-12 Colombia                8808
+## 69   69 49564246 11573 72867 2020-05-13 Colombia                9288
+## 70   70 49551872 13258 83555 2020-05-14 Colombia                9727</code></pre>
+<p></small></p>
+</section>
+<section id="pronostico-2" class="slide level2">
+<h2>Pronóstico</h2>
+<p><small></p>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-19-1.png" width="768" /></p>
+<p></small></p>
+</section>
+<section id="pronostico-3" class="slide level2">
+<h2>Pronóstico</h2>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-20-1.png" width="768" /></p>
+</section>
+<section id="pronostico-4" class="slide level2">
+<h2>Pronóstico</h2>
+<p><small></p>
+<p>Para a gráfica podemos ver que los parámetros no son los más ajustados, pero si observamos que pareven seguiruna tendencia entre los valores ajustados y los observados. Necesitaríamos de más datos para comprobar si existe convergencia en el largo plazo. La siguiente gráfica es similar a la anterior, excepto que el eje <em>y</em> es una metrica en una escala logarítmica.</p>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-21-1.png" width="768" /><img src="Covid_files/figure-revealjs/unnamed-chunk-21-2.png" width="768" /></p>
+<p></small></p>
+</section>
+<section id="numero-basico-de-reproduccion-1" class="slide level2">
+<h2>Número básico de reproducción</h2>
+<p><small></p>
+<p>El modelamiento SIR, parece presentar un ajuste para los datos de las incidencias observadas en Colombia. Así que ahora apoyandose en el modelo se calculará el <span class="math inline">\(R_0\)</span> (número básico de reproducción). el <strong>número básico de reprodución</strong> nos indica el promedio de individuos susceptibles que fueron infectados por individuos infecciosos, es decir, el número básico de reproducción indica el cociente entre individuos saludables que pueden ser infectados por individuos enfermos.</p>
+<p>Cuando <span class="math inline">\(R_0 &gt; 1\)</span> la enfermedad empieza a expandirse en una población, pero sí <span class="math inline">\(R_0 &lt; 1\)</span> no es así. Como se indico con anterioridad, entre mayor sea el valor de <span class="math inline">\(R_0\)</span> más complicado será tener control de la epidemia y tiene más probabilidades de convertirse en pandemia.</p>
+<p>Formalmente, se tiene:</p>
+<p><span class="math display">\[
+R_0 = \frac{\beta}{\gamma}
+\]</span></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">R0 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(Opt_par[<span class="dv">1</span>] <span class="op">/</span><span class="st"> </span>Opt_par[<span class="dv">2</span>])</a></code></pre></div>
+<p></small></p>
+</section>
+<section id="numero-basico-de-reproduccion-2" class="slide level2">
+<h2>Número básico de reproducción</h2>
+<p><small></p>
+<p>Se tiene entones que para Colombia el <span class="math inline">\(R_0\)</span> = 1.16. Es decir, un <span class="math inline">\(R_0\)</span> de 1.16 significa que en promedio en Colombia tenemos 1.16 individuos que son infectados por una persona infectada. De acuerdo con (Fine, Eames, and Heymann 2011) la proporción de individuos que debe ser inmune para prevenir un aumento del brote de la enfermedad o <em>HIT</em> (como se mencionó con anterioridad) debe ser:</p>
+<p><span class="math display">\[
+1 - \frac{1}{R_0}
+\]</span></p>
+<p>El número de básico de reproducción 1.16 es suficiente para calcular la porción de individuos de la población que tienen que se inmunes para detener el brote de la enfermedad es 13.78%. Con la población estimada en el modelamiento SIR para Colombia se tendrían a aproximadamente 6,840,400 individuos inmunes para detener el brote del SARS-CoV-2.</p>
+<p></small></p>
+</section>
+<section id="que-sucede-si-la-tendencia-continua" class="slide level2">
+<h2>¿Que sucede si la tendencia continua?</h2>
+<p><small></p>
+<p>Traemos nuevamente los valores ajustados del modelamiento SIR. Como se observa a continuación:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">fitted_cumulative_incidence &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">ode</span>(</a>
+<a class="sourceLine" id="cb15-2" title="2">    <span class="dt">y =</span> init, <span class="dt">times =</span> t,</a>
+<a class="sourceLine" id="cb15-3" title="3">    <span class="dt">func =</span> SIR, <span class="dt">parms =</span> Opt_par</a>
+<a class="sourceLine" id="cb15-4" title="4">))</a></code></pre></div>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" /></p>
+<p></small></p>
+</section>
+<section id="que-sucede-si-la-tendencia-continua-1" class="slide level2">
+<h2>¿Que sucede si la tendencia continua?</h2>
+<p><small></p>
+<p>Ahora, la misma gráfica con una transformación logarítmica para el eje <em>y</em> con el fin de aumentar la sencilles de lectura de la grádica.</p>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-27-1.png" width="768" /></p>
+<p></small></p>
+</section>
+<section id="que-sucede-si-la-tendencia-continua-2" class="slide level2">
+<h2>¿Que sucede si la tendencia continua?</h2>
+<p><small></p>
+<p>Ahora, si únicamente queremos ver el pronóstico del modelamiento SIR y las incidencias acumuladas observadas, tenemos la siguinte gráfica:</p>
+<p><img src="Covid_files/figure-revealjs/unnamed-chunk-28-1.png" width="768" /></p>
+<p></small></p>
+</section>
+<section id="conlusiones-y-discucion-final" class="slide level2">
+<h2>Conlusiones y discución final</h2>
+<p><small></p>
+<p>Este tipo de modelamiento SIR, no cumple a cabalidad con todos los supuestos requeridos para la situación actual de la pandemia con el SARS-CoV-2. No obstante sirve como ejercicio para evaluar el alcance de la pandemia actual. También cabe indicar que existen estudios con mayor precisión basados en modelos con una mayor complejidad.</p>
+<p>Podemos evienciar que de acuerdo al modelaiento del SIR, el pico de la pandemia se estima el 2020-06-20 y tendremos 494,339 casos infectados. Tendremos 98,868 casos severos. Se estiman 29,660 casos de necesidad de cuidados intensivos. Y finalmente, se estiman 22,245 muertes suponiendo una tasa de fatalidad del 4,5% . La pandemia según el modelamiento realizado con el modelo SIR terminará el 2020-10-13.</p>
+<p></small></p>
+</section>
+    </div>
+  </div>
+
+  <script src="Covid_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="Covid_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: true,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        chalkboard: {
+        },
+
+        keyboard: {
+          67: function() { RevealChalkboard.toggleNotesCanvas() },    // toggle notes canvas when 'c' is pressed
+          66: function() { RevealChalkboard.toggleChalkboard() }, // toggle chalkboard when 'b' is pressed
+          46: function() { RevealChalkboard.clear() },    // clear chalkboard when 'DEL' is pressed
+           8: function() { RevealChalkboard.reset() },    // reset chalkboard data on current slide when 'BACKSPACE' is pressed
+          68: function() { RevealChalkboard.download() }, // downlad recorded chalkboard drawing when 'd' is pressed
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'Covid_files/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+          { src: 'Covid_files/reveal.js-3.3.0.1/plugin/search/search.js', async: true },
+          { src: 'Covid_files/reveal.js-3.3.0.1/plugin/chalkboard/chalkboard.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

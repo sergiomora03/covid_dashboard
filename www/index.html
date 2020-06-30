@@ -1,0 +1,77 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="generator" content="R package animation 2.6">
+	<title>Animations Using the R Language</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/scianimator.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+
+	<script src="js/jquery-1.4.4.min.js"></script>
+	<script src="js/jquery.scianimator.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body>
+
+	<div class="scianimator"><div id="Rplot" style="display: inline-block;"></div></div>
+	<div class="scianimator" style="width: 480px; text-align: left"><pre><code class="r">## Animations generated in R version 3.6.0 (2019-04-26)
+##   using the package animation
+library(dismo)
+library(raster)
+library(tidyverse)
+library(shinyWidgets)
+library(egg)
+library(gridExtra)
+library(sp)
+library(animation)
+library(lubridate)
+library(forcats)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(readr)
+library(tidyr)
+library(tibble)
+library(ggplot2)
+library(coronavirus)
+library(deSolve)
+library(shinythemes)
+library(shinydashboard)
+library(shiny)
+for (p in 1:1000) {
+    id <- sprintf("%03d", num[p])
+    a <- grid.arrange(ggplot() + geom_line(data = as_tibble(ratio[1:num[p], 
+        ]), aes(x = X1.steps, y = NA., color = "Free Movement"), 
+        size = 1) + geom_line(data = as_tibble(ratio2[1:num[p], 
+        ]), aes(x = X1.steps, y = NA., color = "Restricted Movement"), 
+        size = 1) + labs(title = paste0("Infected curves: ", 
+        id), color = "Legend") + xlab("Time") + ylab("Infected") + 
+        theme_classic(), arrangeGrob(ggplot() + geom_point(data = as_tibble(xyFromCell(r, 
+        as.numeric(locations[num[p], ]))), aes(x = x, y = y, 
+        color = "No Infected"), size = 2) + geom_point(data = as_tibble(xyFromCell(r, 
+        as.numeric(locations[num[p], ]))[pob_inf[[num[p]]], 
+        ]), aes(x = x, y = y, color = "Infected"), size = 2) + 
+        labs(title = "Free movement") + guides(fill = FALSE, 
+        color = FALSE) + theme_classic(), ggplot() + geom_point(data = as_tibble(xyFromCell(r, 
+        as.numeric(locations2[num[p], ]))), aes(x = x, y = y, 
+        color = "No Infected"), size = 2) + geom_point(data = as_tibble(xyFromCell(r, 
+        as.numeric(locations2[num[p], ]))[pob_inf2[[num[p]]], 
+        ]), aes(x = x, y = y, color = "Infected"), size = 2) + 
+        labs(title = "Restricted movement") + guides(fill = FALSE, 
+        color = FALSE) + theme_classic(), ncol = 2, nrow = 1))
+    cat(paste0("\n Infected curves: ", id, "\n"))
+    print(a)
+}
+## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Other packages: dismo 1.1-4, raster 2.9-5, tidyverse 1.3.0, shinyWidgets 0.4.8, egg 0.4.5, gridExtra 2.3, sp 1.3-1, animation 2.6, lubridate 1.7.4, forcats 0.4.0, stringr 1.4.0, dplyr 0.8.4, purrr
+## 0.3.3, readr 1.3.1, tidyr 1.0.0, tibble 2.1.3, ggplot2 3.2.1, coronavirus 0.2.0, deSolve 1.24, shinythemes 1.1.2, shinydashboard 0.7.1, shiny 1.3.2</code></pre></div>
+	<script src="js/Rplot.js"></script>
+<!-- highlight R code -->
+
+</body>
+</html>

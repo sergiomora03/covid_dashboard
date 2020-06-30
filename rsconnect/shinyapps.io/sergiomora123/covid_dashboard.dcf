@@ -1,0 +1,13 @@
+name: covid_dashboard
+title: covid_dashboard
+username:
+account: sergiomora123
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2316191
+bundleId: 3160403
+url: https://sergiomora123.shinyapps.io/covid_dashboard/
+when: 1589780076.79806
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app.R|images/Rplot1.png
