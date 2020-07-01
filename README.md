@@ -34,7 +34,7 @@ responder al llamado.
 
 |Files|Description|
 |-----|-----------|
-|App | [App.R](https://github.com/sergiomora03/covid_dashboard/blob/master/app.R)|
+|Script | [App.R](https://github.com/sergiomora03/covid_dashboard/blob/master/app.R)|
 |Dashboard|[Shiny V1](https://sergiomora123.shinyapps.io/covid19_dashboard/)|
 |Dashboard|[Shiny V2](https://sergiomora123.shinyapps.io/covid_19/)|
 
